@@ -11,7 +11,7 @@ from tempfile import TemporaryDirectory
 
 
 # Github url to meta.yml:
-meta_yml_url = ""
+meta_yml_url = "https://github.com/carbonplan/leap-pgf-example/blob/main/meta.yml"
 
 # Filename Pattern Inputs
 target_chunks = {"time": 40}
