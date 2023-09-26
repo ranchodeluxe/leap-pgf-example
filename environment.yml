@@ -1,0 +1,12 @@
+name: pgf-example
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - git
+  - pip
+  - pre-commit
+  - xarray
+  - pip:
+      - git+https://github.com/pangeo-forge/pangeo-forge-recipes
+      - "apache-beam[interactive, dataframe]"
