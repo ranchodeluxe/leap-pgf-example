@@ -6,8 +6,6 @@ from pangeo_forge_recipes.transforms import (
 )
 from pangeo_forge_recipes.patterns import FilePattern, ConcatDim, MergeDim
 from pangeo_forge_recipes.transforms import Indexed, T
-import os
-from tempfile import TemporaryDirectory
 
 
 # Github url to meta.yml:
@@ -39,11 +37,6 @@ pattern = FilePattern(
     MergeDim(name="variable", keys=variables),
 )
 
-td = TemporaryDirectory()
-target_root = td.name
-store_name = "AGDC.zarr"
-target_path = os.path.join(target_root, store_name)
-
 
 class DropVars(beam.PTransform):
     """
@@ -60,16 +53,18 @@ class DropVars(beam.PTransform):
         return pcoll | beam.Map(self._drop_vars)
 
 
-transforms = (
+AGCD = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec()
     | OpenWithXarray(file_type=pattern.file_type)
     | DropVars()  # New preprocessor
     | StoreToZarr(
-        store_name=store_name,
-        target_root=target_root,
+        store_name="AGCD.zarr",
         combine_dims=pattern.combine_dim_keys,
         target_chunks=target_chunks,
-        add_attrs={"meta_yml_url", meta_yml_url},
+        attrs={"meta_yml_url": meta_yml_url},
     )
 )
+
+
+# pangeo-forge-runner bake --repo=~/Documents/carbonplan/leap-pgf-example/ -f ~/Documents/carbonplan/leap-pgf-example/feedstock/config.json --Bake.job_name=AGCD --Bake.job_name=agcd
