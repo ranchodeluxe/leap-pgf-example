@@ -1,0 +1,10 @@
+apache-beam==2.42.0
+s3fs==2023.9.2
+typing-extensions==4.8.0
+tomli==2.0.1
+packaging==23.2
+setuptools>=45
+setuptools_scm[toml]>=6.0
+wheel
+#pangeo-forge-recipes==0.10.3
+git+https://github.com/ranchodeluxe/pangeo-forge-recipes@b170ce6b6b79045a7aedddb6d85c358d275916ac#egg=pangeo-forge-recipes
