@@ -12,6 +12,7 @@ from pangeo_forge_recipes.patterns import FilePattern, ConcatDim, MergeDim
 from pangeo_forge_recipes.transforms import Indexed, T
 
 EXAMPLE = os.environ.get('WORKER_TOKEN') or os.environ.get('PRODUCER_TOKEN')
+print(f"[ EXAMPLE ]: {EXAMPLE}")
 
 # Github url to meta.yml:
 meta_yaml_url = (
