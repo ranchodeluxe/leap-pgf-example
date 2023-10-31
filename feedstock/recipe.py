@@ -12,8 +12,13 @@ import logging
 logger = logging.getLogger('apache-beam')
 import os
 
-EXAMPLE = os.environ.get('WORKER_TOKEN') or os.environ.get('PRODUCER_TOKEN')
+EXAMPLE = os.environ.get('PRODUCER_ENV_VAR_ONLY', 'FAIL')
 logger.error(f"[ EXAMPLE ]: {EXAMPLE}")
+def raise_hell():
+    raise ValueError('raise hell')
+
+if EXAMPLE == 'FAIL':
+    raise_hell()
 
 # Github url to meta.yml:
 meta_yaml_url = (
