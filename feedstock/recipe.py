@@ -1,7 +1,7 @@
 # This recipe can be run with `pangeo-forge-runner` with the CLI command:
 # pangeo-forge-runner bake --repo=~/Documents/carbonplan/leap-pgf-example/ -f ~/Documents/carbonplan/leap-pgf-example/feedstock/config.json --Bake.job_name=AGCD --Bake.job_name=agcd
 
-
+import os
 import apache_beam as beam
 from pangeo_forge_recipes.transforms import (
     OpenURLWithFSSpec,
@@ -11,6 +11,7 @@ from pangeo_forge_recipes.transforms import (
 from pangeo_forge_recipes.patterns import FilePattern, ConcatDim, MergeDim
 from pangeo_forge_recipes.transforms import Indexed, T
 
+EXAMPLE = os.environ.get('WORKER_TOKEN') or os.environ.get('PRODUCER_TOKEN')
 
 # Github url to meta.yml:
 meta_yaml_url = (
