@@ -10,12 +10,20 @@ from pangeo_forge_recipes.transforms import (
 )
 from pangeo_forge_recipes.patterns import FilePattern, ConcatDim, MergeDim
 from pangeo_forge_recipes.transforms import Indexed, T
+from pangeo_forge_big_query import LogToBigQuery
 
 
+# --------------- METADATA AND CATALOGING -------------------------------
 # Github url to meta.yml:
 meta_yaml_url = (
     "https://github.com/carbonplan/leap-pgf-example/blob/main/feedstock/meta.yaml"
 )
+dataset_id = 'AGCD'
+catalog_table_id = 'LEAP_data_catalog'
+# -----------------------------------------------------------------------
+
+
+
 
 # Filename Pattern Inputs
 target_chunks = {"time": 40}
@@ -68,4 +76,6 @@ AGCD = (
         target_chunks=target_chunks,
         attrs={"meta_yaml_url": meta_yaml_url},
     )
+    | "Log to BQ Catalog Table" >> LogToBigQuery(iid=dataset_id, table_id=catalog_table_id)
+
 )
