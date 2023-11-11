@@ -1,12 +1,15 @@
-# This recipe can be run with `pangeo-forge-runner` with the CLI command:
-# pangeo-forge-runner bake --repo=~/Documents/carbonplan/leap-pgf-example/ -f ~/Documents/carbonplan/leap-pgf-example/feedstock/config.json --Bake.job_name=AGCD --Bake.job_name=agcd
-
-
 import apache_beam as beam
+import os
+import s3fs
+import functools
 from pangeo_forge_recipes.transforms import (
     OpenURLWithFSSpec,
     OpenWithXarray,
     StoreToZarr,
+)
+from pangeo_forge_recipes.storage import (
+    FSSpecTarget,
+    CacheFSSpecTarget,
 )
 from pangeo_forge_recipes.patterns import FilePattern, ConcatDim, MergeDim
 from pangeo_forge_recipes.transforms import Indexed, T
@@ -57,12 +60,22 @@ class DropVars(beam.PTransform):
         return pcoll | beam.Map(self._drop_vars)
 
 
+fss3 = s3fs.S3FileSystem(
+    anon=False,
+    key=os.environ["AWS_ACCESS_KEY"],
+    secret=os.environ["AWS_SECRET_ACCESS_KEY"],
+    client_kwargs={"region_name":"us-west-2"}
+)
+fs = FSSpecTarget(fs=fss3, root_path="s3://gcorradini-forge-runner-test")
+
+StoreToZarrWithTargetRoot = functools.partial(StoreToZarr, target_root=fs)
+
 AGCD = (
     beam.Create(pattern.items())
     | OpenURLWithFSSpec()
     | OpenWithXarray(file_type=pattern.file_type)
     | DropVars()
-    | StoreToZarr(
+    | StoreToZarrWithTargetRoot(
         store_name="AGCD.zarr",
         combine_dims=pattern.combine_dim_keys,
         target_chunks=target_chunks,
