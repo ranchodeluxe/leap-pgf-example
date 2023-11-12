@@ -69,14 +69,15 @@ fss3 = s3fs.S3FileSystem(
 fs = FSSpecTarget(fs=fss3, root_path="s3://gcorradini-forge-runner-test/agcd/output")
 cfs = CacheFSSpecTarget(fs=fss3, root_path="s3://gcorradini-forge-runner-test/agcd/cache")
 
-StoreToZarrWithTargetRoot = functools.partial(StoreToZarr, target_root=fs)
+#StoreToZarrWithTargetRoot = functools.partial(StoreToZarr, target_root=fs)
 
 AGCD = (
     beam.Create(pattern.items())
-    | OpenURLWithFSSpec()
+    | OpenURLWithFSSpec(cache=cfs)
     | OpenWithXarray(file_type=pattern.file_type)
     | DropVars()
-    | StoreToZarrWithTargetRoot(
+    | StoreToZarr(
+        target_root=fs,
         store_name="AGCD.zarr",
         combine_dims=pattern.combine_dim_keys,
         target_chunks=target_chunks,
