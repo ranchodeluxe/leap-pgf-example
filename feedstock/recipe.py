@@ -66,7 +66,8 @@ fss3 = s3fs.S3FileSystem(
     secret=os.environ["AWS_SECRET_ACCESS_KEY"],
     client_kwargs={"region_name":"us-west-2"}
 )
-fs = FSSpecTarget(fs=fss3, root_path="s3://gcorradini-forge-runner-test")
+fs = FSSpecTarget(fs=fss3, root_path="s3://gcorradini-forge-runner-test/agcd/output")
+cfs = CacheFSSpecTarget(fs=fss3, root_path="s3://gcorradini-forge-runner-test/agcd/cache")
 
 StoreToZarrWithTargetRoot = functools.partial(StoreToZarr, target_root=fs)
 
