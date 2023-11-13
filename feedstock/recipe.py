@@ -2,6 +2,7 @@ import apache_beam as beam
 import os
 import s3fs
 import functools
+import pangeo_forge_recipes
 from pangeo_forge_recipes.transforms import (
     OpenURLWithFSSpec,
     OpenWithXarray,
@@ -45,10 +46,36 @@ pattern = FilePattern(
 )
 
 
+def my_get_injection_specs():
+    return {
+        "StoreToZarr": {
+            "target_root": "TARGET_STORAGE",
+        },
+        "DropVars": {
+            "target_root": "TARGET_STORAGE",
+        },
+        "WriteCombinedReference": {
+            "target_root": "TARGET_STORAGE",
+        },
+        "OpenURLWithFSSpec": {"cache": "INPUT_CACHE_STORAGE"},
+    }
+
+# monkey patch this sucker
+pangeo_forge_recipes.injections.get_injection_specs =  my_get_injection_specs
+
+
 class DropVars(beam.PTransform):
-    """
-    Custom Beam tranform to drop unused vars
-    """
+
+    def __init__(self, label=None, target_root=None):
+        # type: (Optional[str]) -> None
+        super().__init__()
+	self.target_root = target_root
+        import logging
+        logger = logging.getLogger('pangeo_forge_recipes')
+        logger.error("#######################################################################")
+        logger.error(self.target_root)
+        logger.error("#######################################################################")
+        self.label = label  # type: ignore # https://github.com/python/mypy/issues/3004
 
     @staticmethod
     def _drop_vars(item: Indexed[T]) -> Indexed[T]:
@@ -60,24 +87,12 @@ class DropVars(beam.PTransform):
         return pcoll | beam.Map(self._drop_vars)
 
 
-fss3 = s3fs.S3FileSystem(
-    anon=False,
-    key=os.environ["AWS_ACCESS_KEY"],
-    secret=os.environ["AWS_SECRET_ACCESS_KEY"],
-    client_kwargs={"region_name":"us-west-2"}
-)
-fs = FSSpecTarget(fs=fss3, root_path="s3://gcorradini-forge-runner-test/agcd/output")
-cfs = CacheFSSpecTarget(fs=fss3, root_path="s3://gcorradini-forge-runner-test/agcd/cache")
-
-#StoreToZarrWithTargetRoot = functools.partial(StoreToZarr, target_root=fs)
-
 AGCD = (
     beam.Create(pattern.items())
-    | OpenURLWithFSSpec(cache=cfs)
+    | OpenURLWithFSSpec()
     | OpenWithXarray(file_type=pattern.file_type)
     | DropVars()
     | StoreToZarr(
-        target_root=fs,
         store_name="AGCD.zarr",
         combine_dims=pattern.combine_dim_keys,
         target_chunks=target_chunks,
