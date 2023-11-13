@@ -2,7 +2,7 @@ import apache_beam as beam
 import os
 import s3fs
 import functools
-import pangeo_forge_recipes
+import pangeo_forge_recipes.injections
 from pangeo_forge_recipes.transforms import (
     OpenURLWithFSSpec,
     OpenWithXarray,
