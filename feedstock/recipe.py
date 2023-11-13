@@ -81,6 +81,9 @@ class DropVars(beam.PTransform):
     @staticmethod
     def _drop_vars(item: Indexed[T]) -> Indexed[T]:
         index, ds = item
+        logger.error("#######################################################################")
+        logger.error(self.target_root)
+        logger.error("#######################################################################")
         ds = ds.drop_vars(["crs", "lat_bnds", "lon_bnds", "time_bnds"])
         return index, ds
 
