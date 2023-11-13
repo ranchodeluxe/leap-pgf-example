@@ -60,8 +60,9 @@ def my_get_injection_specs():
         "OpenURLWithFSSpec": {"cache": "INPUT_CACHE_STORAGE"},
     }
 
+
 # monkey patch this sucker
-pangeo_forge_recipes.injections.get_injection_specs =  my_get_injection_specs
+pangeo_forge_recipes.injections.get_injection_specs = my_get_injection_specs
 
 
 class DropVars(beam.PTransform):
@@ -69,7 +70,7 @@ class DropVars(beam.PTransform):
     def __init__(self, label=None, target_root=None):
         # type: (Optional[str]) -> None
         super().__init__()
-	self.target_root = target_root
+        self.target_root = target_root
         import logging
         logger = logging.getLogger('pangeo_forge_recipes')
         logger.error("#######################################################################")
