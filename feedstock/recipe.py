@@ -72,24 +72,24 @@ class DropVars(beam.PTransform):
         super().__init__()
         self.target_root = target_root
         import logging
-        logger = logging.getLogger('pangeo_forge_recipes')
-        logger.error("#######################################################################")
+        logger = logging.getLogger("pangeo_forge_recipes")
+        logger.error("#####################################")
         logger.error(self.target_root)
-        logger.error("#######################################################################")
+        logger.error("#####################################")
         self.label = label  # type: ignore # https://github.com/python/mypy/issues/3004
 
     @staticmethod
     def _drop_vars(item: Indexed[T]) -> Indexed[T]:
         index, ds = item
-        import logging
-        logger = logging.getLogger('pangeo_forge_recipes')
-        logger.error("#######################################################################")
-        logger.error(self.target_root)
-        logger.error("#######################################################################")
         ds = ds.drop_vars(["crs", "lat_bnds", "lon_bnds", "time_bnds"])
         return index, ds
 
     def expand(self, pcoll: beam.PCollection) -> beam.PCollection:
+        import logging
+        logger = logging.getLogger("pangeo_forge_recipes")
+        logger.error("#####################################")
+        logger.error(self.target_root)
+        logger.error("#####################################")
         return pcoll | beam.Map(self._drop_vars)
 
 
