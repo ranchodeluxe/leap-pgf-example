@@ -81,6 +81,8 @@ class DropVars(beam.PTransform):
     @staticmethod
     def _drop_vars(item: Indexed[T]) -> Indexed[T]:
         index, ds = item
+        import logging
+        logger = logging.getLogger('pangeo_forge_recipes')
         logger.error("#######################################################################")
         logger.error(self.target_root)
         logger.error("#######################################################################")
