@@ -74,7 +74,7 @@ class DropVars(beam.PTransform):
         import logging
         logger = logging.getLogger("pangeo_forge_recipes")
         logger.error("#####################################")
-        logger.error(self.target_root)
+        logger.error(f"[ INIT ]: {self.target_root}")
         logger.error("#####################################")
         self.label = label  # type: ignore # https://github.com/python/mypy/issues/3004
 
@@ -88,7 +88,7 @@ class DropVars(beam.PTransform):
         import logging
         logger = logging.getLogger("pangeo_forge_recipes")
         logger.error("#####################################")
-        logger.error(self.target_root)
+        logger.error(f"[ EXPAND ]: {self.target_root}")
         logger.error("#####################################")
         return pcoll | beam.Map(self._drop_vars)
 
