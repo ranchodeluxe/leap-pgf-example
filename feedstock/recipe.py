@@ -1,5 +1,6 @@
 # This recipe can be run with `pangeo-forge-runner` with the CLI command:
-# pangeo-forge-runner bake --repo=~/Documents/carbonplan/LEAP/leap-pgf-example/ -f ~/Documents/carbonplan/LEAP/leap-pgf-example/feedstock/config.json --Bake.recipe_id=AGCD --Bake.job_name=agcd
+# pangeo-forge-runner bake --repo=~/Documents/carbonplan/LEAP/leap-pgf-example/ -f ~/Documents/carbonplan/LEAP/
+# leap-pgf-example/feedstock/config.json --Bake.recipe_id=AGCD --Bake.job_name=agcd # noqa: E501
 
 
 import apache_beam as beam
@@ -18,8 +19,8 @@ from pangeo_forge_big_query import RegisterDatasetToCatalog
 meta_yaml_url = (
     "https://github.com/carbonplan/leap-pgf-example/blob/main/feedstock/meta.yaml"
 )
-dataset_id = 'AGCD'
-catalog_table_id = 'LEAP_data_catalog'
+dataset_id = "AGCD"
+table_id = "carbonplan.leap.test_dataset_catalog"
 # -----------------------------------------------------------------------
 
 
@@ -74,6 +75,6 @@ AGCD = (
         target_chunks=target_chunks,
         attrs={"meta_yaml_url": meta_yaml_url},
     )
-    | "Log to carbonplan BQ Catalog Table" >> RegisterDatasetToCatalog(table_id=catalog_table_id, dataset_id=dataset_id, dataset_url='.')
-
+    | "Log to carbonplan BQ Catalog Table"
+    >> RegisterDatasetToCatalog(table_id=table_id, dataset_id=dataset_id)
 )
