@@ -1,5 +1,5 @@
 # This recipe can be run with `pangeo-forge-runner` with the CLI command:
-# pangeo-forge-runner bake --repo=~/Documents/carbonplan/leap-pgf-example/ -f ~/Documents/carbonplan/leap-pgf-example/feedstock/config.json --Bake.job_name=AGCD --Bake.job_name=agcd
+# pangeo-forge-runner bake --repo=~/Documents/carbonplan/LEAP/leap-pgf-example/ -f ~/Documents/carbonplan/LEAP/leap-pgf-example/feedstock/config.json --Bake.recipe_id=AGCD --Bake.job_name=agcd
 
 
 import apache_beam as beam
