@@ -1,5 +1,5 @@
 # This recipe can be run with `pangeo-forge-runner` with the CLI command:
-# pangeo-forge-runner bake --repo=~/Documents/carbonplan/LEAP/leap-pgf-example/ -f ~/Documents/carbonplan/LEAP/
+# pangeo-forge-runner bake --repo=~/Documents/carbonplan/LEAP/leap-pgf-example/ -f ~/Documents/carbonplan/LEAP/ # noqa: E501
 # leap-pgf-example/feedstock/config.json --Bake.recipe_id=AGCD --Bake.job_name=agcd # noqa: E501
 
 
@@ -11,7 +11,7 @@ from pangeo_forge_recipes.transforms import (
 )
 from pangeo_forge_recipes.patterns import FilePattern, ConcatDim, MergeDim
 from pangeo_forge_recipes.transforms import Indexed, T
-from pangeo_forge_big_query import RegisterDatasetToCatalog
+from data_management_utils import RegisterDatasetToCatalog
 
 
 # --------------- METADATA AND CATALOGING -------------------------------

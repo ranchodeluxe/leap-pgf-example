@@ -1,1 +1,2 @@
-git+https://github.com/carbonplan/pangeo-forge-big-query
+git+https://github.com/leap-stc/data-management-utils
+s3fs
