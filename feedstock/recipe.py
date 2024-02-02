@@ -7,7 +7,7 @@ from pangeo_forge_recipes.transforms import (
     StoreToZarr,
 )
 from pangeo_forge_recipes.patterns import FilePattern, ConcatDim, MergeDim
-from pangeo_forge_recipes.transforms import Indexed, T
+from pangeo_forge_recipes.transforms import Indexed, T, ConsolidateMetadata
 import logging
 logger = logging.getLogger('apache-beam')
 import os
@@ -69,4 +69,5 @@ AGCD = (
         target_chunks=target_chunks,
         attrs={"meta_yaml_url": meta_yaml_url},
     )
+    | ConsolidateMetadata()
 )
