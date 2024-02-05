@@ -22,7 +22,7 @@ meta_yaml_url = (
 target_chunks = {"time": 40}
 
 # Time Range
-years = list(range(1971, 1973))  # 2020
+years = list(range(1971, 2020))  # 2020
 
 # Variable List
 variables = ["precip", "tmax"]  # "tmin", "vapourpres_h09", "vapourpres_h15"
