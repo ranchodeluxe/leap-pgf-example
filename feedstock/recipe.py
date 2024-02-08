@@ -55,7 +55,8 @@ class DropVars(beam.PTransform):
 
 
 pyramid_test_recipe = (
-    process = (beam.Create(pattern.items()) | OpenURLWithFSSpec()
+    process = (beam.Create(pattern.items()) 
+        | OpenURLWithFSSpec()
         | OpenWithXarray(file_type=pattern.file_type)
         | DropVars())
 
@@ -64,7 +65,7 @@ pyramid_test_recipe = (
     )
     pyramid_store = process | "Write Pyramid Levels" >> StoreToPyramid(
         store_name="pyramid",
-        n_levels=2,
+        n_levels=4,
         combine_dims=pattern.combine_dim_keys,
     )
     )
