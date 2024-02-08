@@ -3,7 +3,7 @@ description: "The Australian Gridded Climate Data dataset is a 5KM gridded daily
 pangeo_forge_version: "0.10.2"
 recipes:
   - id: AGCD
-    object: "recipe:AGCD"
+    object: "recipe:pyramid_test_recipe"
 provenance:
   providers:
     - name: "Australian Bureau of Meteorology"
