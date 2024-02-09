@@ -1,5 +1,5 @@
 git+https://github.com/leap-stc/data-management-utils
 s3fs
-git+https://github.com/norlandrhagen/pangeo-forge-recipes@ndpyramid
-git+https://github.com/carbonplan/ndpyramid@split-levels
+git+https://github.com/pangeo-forge/pangeo-forge-recipes@gcorradini_ndpyramid#egg=pangeo-forge-recipes
+git+https://github.com/carbonplan/ndpyramid@split-levels#egg=ndpyramid
 rioxarray
