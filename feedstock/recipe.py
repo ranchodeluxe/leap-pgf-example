@@ -1,5 +1,5 @@
 # This recipe can be run with `pangeo-forge-runner` with the CLI command:
-# pangeo-forge-runner bake --repo=~/Documents/carbonplan/leap-pgf-example/ -f ~/Documents/carbonplan/leap-pgf-example/feedstock/config.json --Bake.recipe_id=AGCD --Bake.job_name=agcd
+# pangeo-forge-runner bake --repo=~/Documents/carbonplan/leap-pgf-example/ -f ~/Documents/carbonplan/leap-pgf-example/feedstock/config.json --Bake.recipe_id=pyramid_test_recipe --Bake.job_name=agcd
 
 import apache_beam as beam
 from pangeo_forge_recipes.transforms import (
@@ -10,7 +10,8 @@ from pangeo_forge_recipes.transforms import (
 )
 from pangeo_forge_recipes.patterns import FilePattern, ConcatDim, MergeDim
 from pangeo_forge_recipes.transforms import Indexed, T
-
+import fsspec
+from pangeo_forge_recipes.storage import FSSpecTarget
 
 # -----------------------------------------------------------------------
 
@@ -54,38 +55,31 @@ class DropVars(beam.PTransform):
         return pcoll | beam.Map(self._drop_vars)
 
 
-pyramid_test_recipe = (
-    process = (beam.Create(pattern.items()) 
-        | OpenURLWithFSSpec()
-        | OpenWithXarray(file_type=pattern.file_type)
-        | DropVars())
 
-    zarr_store = process | "Write Base Level" >> StoreToZarr(
-        store_name="store", combine_dims=pattern.combine_dim_keys
-    )
-    pyramid_store = process | "Write Pyramid Levels" >> StoreToPyramid(
+fs = fsspec.get_filesystem_class("file")()
+path = str(".pyr_data")
+target_root = FSSpecTarget(fs, path)
+
+
+def lazy_graph_mutator(p: beam.Pipeline):
+    initial = (p | beam.Create(pattern.items())
+            | OpenURLWithFSSpec()
+            | OpenWithXarray(file_type=pattern.file_type)
+            | DropVars())
+    initial | "Write Pyramid Levels" >> StoreToPyramid(
         store_name="pyramid",
-        n_levels=4,
+        target_root=target_root,
+        n_levels=2,
         combine_dims=pattern.combine_dim_keys,
-    )
-    )
+        )
+    initial | "Write Pyramid Levels" >> StoreToPyramid(
+        store_name="pyramid",
+        target_root=target_root,
+        n_levels=2,
+        combine_dims=pattern.combine_dim_keys)
+    return p
 
-# recipe = (
-#     beam.Create(pattern.items())
-#     | OpenWithKerchunk(
-#         remote_protocol=earthdata_protocol,
-#         file_type=pattern.file_type,
-#         # lat/lon are around 5k, this is the best option for forcing kerchunk to inline them
-#         inline_threshold=6000,
-#         storage_options=auth_args,
-#     )
-#     | WriteCombinedReference(
-#         concat_dims=CONCAT_DIMS,
-#         identical_dims=IDENTICAL_DIMS,
-#         store_name=SHORT_NAME,
-#         # for running without a runner, use this target_root
-#         # target_root=fs_target,
-#         # mzz_kwargs={'coo_map': {"time": "cf:time"}, 'inline_threshold': 0}
-#     )
-#     #| ValidateDatasetDimensions(expected_dims={'time': None, 'lat': (-90, 90), 'lon': (-180, 180)})
-)
+recipe = lazy_graph_mutator()
+
+
+
