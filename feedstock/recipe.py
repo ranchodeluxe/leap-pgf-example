@@ -1,5 +1,5 @@
 # This recipe can be run with `pangeo-forge-runner` with the CLI command:
-# pangeo-forge-runner bake --repo=~/Documents/carbonplan/leap-pgf-example/ -f ~/Documents/carbonplan/leap-pgf-example/feedstock/config.json --Bake.recipe_id=pyramid_test_recipe --Bake.job_name=agcd
+# pangeo-forge-runner bake --repo=~/Documents/carbonplan/leap-pgf-example/ -f ~/Documents/carbonplan/leap-pgf-example/feedstock/config.json --Bake.job_name=recipe
 
 import apache_beam as beam
 from pangeo_forge_recipes.transforms import (
@@ -55,31 +55,31 @@ class DropVars(beam.PTransform):
         return pcoll | beam.Map(self._drop_vars)
 
 
-
 fs = fsspec.get_filesystem_class("file")()
-path = str(".pyr_data")
+path = ".pyr_data"
 target_root = FSSpecTarget(fs, path)
 
+# This is confusing, but it works
 
-def lazy_graph_mutator(p: beam.Pipeline):
-    initial = (p | beam.Create(pattern.items())
-            | OpenURLWithFSSpec()
-            | OpenWithXarray(file_type=pattern.file_type)
-            | DropVars())
-    initial | "Write Pyramid Levels" >> StoreToPyramid(
-        store_name="pyramid",
-        target_root=target_root,
-        n_levels=2,
+
+def lazy_graph_mutator(p: beam.Pipeline) -> None:
+    initial = (
+        p
+        | beam.Create(pattern.items())
+        | OpenURLWithFSSpec()
+        | OpenWithXarray(file_type=pattern.file_type)
+        | DropVars()
+    )
+    initial | "Store Zarr" >> StoreToZarr(
+        store_name="store",
         combine_dims=pattern.combine_dim_keys,
-        )
+    )
     initial | "Write Pyramid Levels" >> StoreToPyramid(
         store_name="pyramid",
-        target_root=target_root,
         n_levels=2,
-        combine_dims=pattern.combine_dim_keys)
-    return p
-
-recipe = lazy_graph_mutator()
-
+        epsg_code="4326",
+        combine_dims=pattern.combine_dim_keys,
+    )
 
 
+recipe = lazy_graph_mutator

@@ -7,8 +7,8 @@
     "num_workers": 0
   },
   "TargetStorage": {
-    "fsspec_class": "s3fs.S3FileSystem",
-    "root_path": "s3://s3://carbonplan-scratch/"
+    "fsspec_class": "fsspec.implementations.local.LocalFileSystem",
+    "root_path": "."
   },
   "InputCacheStorage": {
     "fsspec_class": "fsspec.implementations.local.LocalFileSystem",
