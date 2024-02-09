@@ -70,10 +70,10 @@ def lazy_graph_mutator(p: beam.Pipeline) -> None:
         | OpenWithXarray(file_type=pattern.file_type)
         | DropVars()
     )
-    initial | "Store Zarr" >> StoreToZarr(
-        store_name="store",
-        combine_dims=pattern.combine_dim_keys,
-    )
+    # initial | "Store Zarr" >> StoreToZarr(
+    #     store_name="store",
+    #     combine_dims=pattern.combine_dim_keys,
+    # )
     initial | "Write Pyramid Levels" >> StoreToPyramid(
         store_name="pyramid",
         n_levels=2,
