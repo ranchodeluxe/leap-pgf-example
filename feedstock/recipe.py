@@ -76,7 +76,7 @@ def lazy_graph_mutator(p: beam.Pipeline) -> None:
     # )
     initial | "Write Pyramid Levels" >> StoreToPyramid(
         store_name="pyramid",
-        n_levels=2,
+        n_levels=10,
         epsg_code="4326",
         combine_dims=pattern.combine_dim_keys,
     )
