@@ -62,24 +62,35 @@ target_root = FSSpecTarget(fs, path)
 # This is confusing, but it works
 
 
-def lazy_graph_mutator(p: beam.Pipeline) -> None:
-    initial = (
-        p
-        | beam.Create(pattern.items())
+# def lazy_graph_mutator(p: beam.Pipeline) -> None:
+#     initial = (
+#         p
+#         | beam.Create(pattern.items())
+#         | OpenURLWithFSSpec()
+#         | OpenWithXarray(file_type=pattern.file_type)
+#         | DropVars()
+#     )
+#     initial | "Store Zarr" >> StoreToZarr(
+#         store_name="store",
+#         combine_dims=pattern.combine_dim_keys,
+#     )
+#     initial | "Write Pyramid Levels" >> StoreToPyramid(
+#         store_name="pyramid",
+#         n_levels=10,
+#         epsg_code="4326",
+#         combine_dims=pattern.combine_dim_keys,
+#     )
+
+
+recipe = (
+    beam.Create(pattern.items())
         | OpenURLWithFSSpec()
         | OpenWithXarray(file_type=pattern.file_type)
         | DropVars()
-    )
-    # initial | "Store Zarr" >> StoreToZarr(
-    #     store_name="store",
-    #     combine_dims=pattern.combine_dim_keys,
-    # )
-    initial | "Write Pyramid Levels" >> StoreToPyramid(
-        store_name="pyramid",
-        n_levels=10,
-        epsg_code="4326",
-        combine_dims=pattern.combine_dim_keys,
-    )
-
-
-recipe = lazy_graph_mutator
+        | StoreToPyramid(
+            store_name="pyramid",
+            n_levels=10,
+            epsg_code="4326",
+            combine_dims=pattern.combine_dim_keys,
+        )
+)
