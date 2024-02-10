@@ -89,7 +89,7 @@ recipe = (
         | DropVars()
         | StoreToPyramid(
             store_name="pyramid",
-            n_levels=1,
+            n_levels=2,
             epsg_code="4326",
             combine_dims=pattern.combine_dim_keys,
         )
